@@ -1,6 +1,15 @@
 CREATE TABLE user(
-	idx INT(7) NOT NULL AUTO_INCREMENT,
     id VARCHAR(32) NOT NULL,
     password VARCHAR(64) NOT NULL,
-    PRIMARY KEY(idx)
+    PRIMARY KEY(id)
 );
+
+DROP TABLE user;
+
+CREATE TABLE servey(
+	servey_id INT(36) NOT NULL,
+    user_id VARCHAR(32) NOT NULL,
+    PRIMARY KEY(servey_id)
+);
+
+DROP TABLE servey;
