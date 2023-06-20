@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +23,7 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<User> signup(HttpServletRequest request,
-                                           @ModelAttribute User user) {
+                                           @RequestBody User user) {
 
         logger.info("Controller : {}", user);
 
@@ -38,7 +35,7 @@ public class UserController {
     @PostMapping("/sign-in")
     public ResponseEntity<User> signin(HttpServletRequest request,
                                        HttpServletResponse response,
-                                       @ModelAttribute User user) {
+                                       @RequestBody User user) {
 
         User found = userService.findUser(user);
 
