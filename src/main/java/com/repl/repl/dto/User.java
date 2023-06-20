@@ -11,15 +11,12 @@ import lombok.*;
 @Builder
 public class User {
 
-    private Long idx;
-
     private String id;
 
     private String password;
 
     public UserEntity toEntity() {
         return UserEntity.builder()
-                .idx(idx)
                 .id(id)
                 .password(password)
                 .build();

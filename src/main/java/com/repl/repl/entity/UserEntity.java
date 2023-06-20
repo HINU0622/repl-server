@@ -17,16 +17,12 @@ import javax.persistence.*;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
-
     private String id;
 
     private String password;
 
     public User toDTO() {
         return User.builder()
-                .idx(idx)
                 .id(id)
                 .password(password)
                 .build();

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
-    public User create(User user);
+    User create(User user);
 
+    User findUser(User user);
 }
