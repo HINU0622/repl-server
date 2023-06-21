@@ -15,10 +15,13 @@ public class Servey {
 
     private String user_id;
 
+    private String content;
+
     public ServeyEntity toEntity() {
         return ServeyEntity.builder()
                 .servey_id(servey_id)
                 .user_id(user_id)
+                .content(content)
                 .build();
     }
 
