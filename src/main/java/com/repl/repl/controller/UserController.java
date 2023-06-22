@@ -1,6 +1,8 @@
 package com.repl.repl.controller;
 
+import com.repl.repl.dto.JwtToken;
 import com.repl.repl.dto.User;
+import com.repl.repl.dto.response.SignInResponse;
 import com.repl.repl.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +35,11 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<User> signin(HttpServletRequest request,
-                                       HttpServletResponse response,
-                                       @RequestBody User user) {
+    public ResponseEntity<SignInResponse> signin(HttpServletRequest request,
+                                                 HttpServletResponse response,
+                                                 @RequestBody User user) {
 
-        User found = userService.findUser(user);
+        SignInResponse signInResponse = userService.signIn(user);
 
         logger.info("Controller : 쿠키 생성");
         Cookie cookie = new Cookie("userid", user.getId());
@@ -47,7 +49,7 @@ public class UserController {
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(signInResponse);
 
     }
 

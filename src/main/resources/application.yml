@@ -9,7 +9,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 server:
-  address: 10.80.161.77
+  address: localhost
   port: 8080
+
+jwt:
+  issuer: hinu0622@gmail.com
+  secretKey: 7088ece9687dd0b4ac48c6c13346270e7a8616cdca55b8564a91b34b4ca5ef79
+  tokenPrefix: Bearer

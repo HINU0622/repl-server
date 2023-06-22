@@ -1,21 +1,32 @@
 package com.repl.repl.service.impl;
 
 import com.repl.repl.dto.User;
+import com.repl.repl.dto.response.SignInResponse;
 import com.repl.repl.entity.UserEntity;
+import com.repl.repl.jwt.JwtTokenProvider;
 import com.repl.repl.repository.UserRepository;
 import com.repl.repl.service.UserService;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service(value = "userService")
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -33,13 +44,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUser(User user) {
+    public SignInResponse signIn(User user) {
 
-        Optional<UserEntity> found = userRepository.findById(user.getId());
+        UserEntity userEntity = user.toEntity();
+
+        Optional<UserEntity> found = userRepository.findById(userEntity.getId());
 
         if(found.isEmpty()) throw new RuntimeException("유저를 찾을 수 없음.");
+        if(!found.get().equals(userEntity)) throw new RuntimeException("아이디 혹은 비밀번호 불일치.");
 
-        return found.get().toDTO();
+        String token = jwtTokenProvider.makeJwtToken(found.get());
+
+        return new SignInResponse(token);
 
     }
+
 }
