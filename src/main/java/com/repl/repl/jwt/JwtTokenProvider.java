@@ -51,7 +51,7 @@ public class JwtTokenProvider {
 
     private void validationAuthorizationHeader(String header) {
         if (header == null || !header.startsWith(jwtProperties.getTokenPrefix())) {
-            throw new IllegalArgumentException("헤더에 토큰 값이 잘못 되었습니다..");
+            throw new IllegalArgumentException("Invalid token!");
         }
     }
 

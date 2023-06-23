@@ -27,8 +27,8 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Spring Boot Open API TEST with swagger")
-                .description("Swagger를 사용한 Spring Boot Open API 테스트")
+                .title("Repl Project")
+                .description("Repl 프로젝트 Api 명세서")
                 .version("1.0.0")
                 .build();
     }
