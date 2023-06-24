@@ -21,6 +21,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] PUBLIC_URLS = {
             "/api/v1/user/sign-up",
             "/api/v1/user/sign-in",
+            "/servey/**",
+            "/favicon.ico",
+            /* swagger */
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -32,6 +35,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             /* swagger v3 */
 //            "/v3/api-docs/**",
 //            "/swagger-ui/**"
+    };
+
+    private static final String[] PRIVATE_URLS = {
+            "/api/v1/servey/**"
     };
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -56,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(PUBLIC_URLS).permitAll()
                 .anyRequest().authenticated();
+
 
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

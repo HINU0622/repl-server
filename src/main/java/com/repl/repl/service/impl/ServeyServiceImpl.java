@@ -23,6 +23,11 @@ public class ServeyServiceImpl implements ServeyService {
     @Override
     public Servey createServey(Servey servey) {
 
+        // TODO
+        /*
+        1. user_id 가 있는 id인지 확인
+         */
+
         ServeyEntity serveyEntity = servey.toEntity();
         serveyEntity.setServey_id(createUUID());
 

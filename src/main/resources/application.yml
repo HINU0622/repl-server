@@ -14,7 +14,7 @@ spring:
       matching-strategy: ant_path_matcher
 
 server:
-  address: 10.80.161.167
+  address: localhost
   port: 8080
 
 jwt:

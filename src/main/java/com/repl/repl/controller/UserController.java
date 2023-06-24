@@ -41,7 +41,6 @@ public class UserController {
 
         SignInResponse signInResponse = userService.signIn(user);
 
-        logger.info("Controller : 쿠키 생성");
         Cookie cookie = new Cookie("userid", user.getId());
         cookie.setDomain("localhost");
         cookie.setPath("/");
