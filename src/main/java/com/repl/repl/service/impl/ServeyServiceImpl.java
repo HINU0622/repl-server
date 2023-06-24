@@ -3,7 +3,9 @@ package com.repl.repl.service.impl;
 import com.repl.repl.dto.Servey;
 import com.repl.repl.entity.ServeyEntity;
 import com.repl.repl.repository.ServeyRepository;
+import com.repl.repl.repository.UserRepository;
 import com.repl.repl.service.ServeyService;
+import com.repl.repl.service.UserService;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,13 +22,13 @@ public class ServeyServiceImpl implements ServeyService {
     @Autowired
     private ServeyRepository serveyRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public Servey createServey(Servey servey) {
 
-        // TODO
-        /*
-        1. user_id 가 있는 id인지 확인
-         */
+        if(userRepository.findById(servey.getUser_id()).isEmpty()) throw new RuntimeException("유저를 찾을 수 없습니다.");
 
         ServeyEntity serveyEntity = servey.toEntity();
         serveyEntity.setServey_id(createUUID());
