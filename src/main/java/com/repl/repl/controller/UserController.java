@@ -1,5 +1,6 @@
 package com.repl.repl.controller;
 
+import com.repl.repl.controller.encryption.SHA256;
 import com.repl.repl.dto.JwtToken;
 import com.repl.repl.dto.User;
 import com.repl.repl.dto.response.SignInResponse;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -37,11 +39,19 @@ public class UserController {
     @PostMapping("/sign-in")
     public ResponseEntity<SignInResponse> signin(HttpServletRequest request,
                                                  HttpServletResponse response,
-                                                 @RequestBody User user) {
+                                                 @RequestBody User user) throws NoSuchAlgorithmException {
+
+        Cookie[] cookies = request.getCookies();
+        for(Cookie c : cookies) {
+            User found = userService.findById(c.getName());
+            if(found.getPassword().equals(c.getValue())) {
+
+            }
+        }
 
         SignInResponse signInResponse = userService.signIn(user);
 
-        Cookie cookie = new Cookie("userid", user.getId());
+        Cookie cookie = new Cookie(user.getId(), SHA256.encrypt(user.getPassword()));
         cookie.setDomain("localhost");
         cookie.setPath("/");
         cookie.setMaxAge(30*60);

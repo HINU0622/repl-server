@@ -6,17 +6,12 @@ import com.repl.repl.entity.UserEntity;
 import com.repl.repl.jwt.JwtTokenProvider;
 import com.repl.repl.repository.UserRepository;
 import com.repl.repl.service.UserService;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.Date;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -41,6 +36,17 @@ public class UserServiceImpl implements UserService {
         if(!saved.equals(userEntity)) throw new RuntimeException("제대로 저장이 되지 않았습니다.");
 
         return saved.toDTO();
+    }
+
+    @Override
+    public User findById(String user_id) {
+
+        Optional<UserEntity> found = userRepository.findById(user_id);
+
+        if(found.isEmpty()) throw new RuntimeException("유저를 찾을 수 없음.");
+
+        return found.get().toDTO();
+
     }
 
     @Override

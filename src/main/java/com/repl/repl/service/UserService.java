@@ -11,4 +11,6 @@ public interface UserService {
 
     SignInResponse signIn(User user);
 
+    User findById(String user_id);
+
 }
