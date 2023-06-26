@@ -1,5 +1,6 @@
 package com.repl.repl.service.impl;
 
+import com.repl.repl.encryption.SHA256;
 import com.repl.repl.dto.User;
 import com.repl.repl.dto.response.SignInResponse;
 import com.repl.repl.entity.UserEntity;
@@ -10,8 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -31,6 +37,12 @@ public class UserServiceImpl implements UserService {
         logger.info("Service : {}", user);
 
         UserEntity userEntity = user.toEntity();
+        try {
+            userEntity.setPassword(SHA256.encrypt(userEntity.getPassword()));
+        } catch(NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         UserEntity saved = userRepository.save(userEntity);
 
         if(!saved.equals(userEntity)) throw new RuntimeException("제대로 저장이 되지 않았습니다.");
@@ -65,4 +77,48 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public SignInResponse signIn(Cookie[] cookies) {
+
+        if(cookies == null) {
+            return null;
+        }
+
+
+        for(Cookie c : cookies) {
+            if(isValidCookie(c)) {
+                UserEntity entity = new UserEntity(c.getName(), c.getValue());
+                String token = jwtTokenProvider.makeJwtToken(entity);
+
+                return new SignInResponse(token);
+            }
+        }
+        return null;
+    }
+
+    public Cookie makeCookie(String user_id, String password) throws NoSuchAlgorithmException {
+
+        Cookie cookie = new Cookie(user_id, password);
+        cookie.setDomain("localhost");
+        cookie.setPath("/");
+        cookie.setMaxAge(30*60);
+        cookie.setSecure(true);
+
+        return cookie;
+    }
+
+    @Override
+    public boolean isValidCookie(Cookie cookie) {
+
+        logger.info("Name  : {}", cookie.getName());
+        logger.info("Value : {}", cookie.getValue());
+
+        Optional<UserEntity> userEntity = userRepository.findById(cookie.getName());
+        if(userEntity.isEmpty()) return false;
+
+        boolean is = userEntity.get().getPassword().equals(cookie.getValue());
+        logger.info("isValid : {}", is);
+
+        return is;
+    }
 }
