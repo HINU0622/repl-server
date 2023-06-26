@@ -1,4 +1,4 @@
-package com.repl.repl.controller.encryption;
+package com.repl.repl.encryption;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

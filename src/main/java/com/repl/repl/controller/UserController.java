@@ -1,7 +1,5 @@
 package com.repl.repl.controller;
 
-import com.repl.repl.controller.encryption.SHA256;
-import com.repl.repl.dto.JwtToken;
 import com.repl.repl.dto.User;
 import com.repl.repl.dto.response.SignInResponse;
 import com.repl.repl.service.UserService;
@@ -42,20 +40,16 @@ public class UserController {
                                                  @RequestBody User user) throws NoSuchAlgorithmException {
 
         Cookie[] cookies = request.getCookies();
-        for(Cookie c : cookies) {
-            User found = userService.findById(c.getName());
-            if(found.getPassword().equals(c.getValue())) {
 
-            }
+        SignInResponse cookieRes = userService.signIn(cookies);
+
+        if(cookieRes != null) {
+            return ResponseEntity.ok(cookieRes);
         }
 
         SignInResponse signInResponse = userService.signIn(user);
 
-        Cookie cookie = new Cookie(user.getId(), SHA256.encrypt(user.getPassword()));
-        cookie.setDomain("localhost");
-        cookie.setPath("/");
-        cookie.setMaxAge(30*60);
-        cookie.setSecure(true);
+        Cookie cookie = userService.makeCookie(user.getId(), user.getPassword());
         response.addCookie(cookie);
 
         return ResponseEntity.ok(signInResponse);
