@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
@@ -28,8 +29,6 @@ public class ServeyServiceImpl implements ServeyService {
     @Override
     public Servey createServey(Servey servey) {
 
-        if(userRepository.findById(servey.getUser_id()).isEmpty()) throw new RuntimeException("유저를 찾을 수 없습니다.");
-
         ServeyEntity serveyEntity = servey.toEntity();
         serveyEntity.setServey_id(createUUID());
 
@@ -44,5 +43,7 @@ public class ServeyServiceImpl implements ServeyService {
     private String createUUID() {
         return UUID.randomUUID().toString();
     }
+
+
 
 }
