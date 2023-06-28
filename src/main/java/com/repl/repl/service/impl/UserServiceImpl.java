@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public Cookie makeCookie(String user_id, String password) throws NoSuchAlgorithmException {
 
         Cookie cookie = new Cookie(user_id, password);
-        cookie.setDomain("localhost");
+        cookie.setDomain("10.80.162.99");
         cookie.setPath("/");
         cookie.setMaxAge(30*60);
         cookie.setSecure(true);
