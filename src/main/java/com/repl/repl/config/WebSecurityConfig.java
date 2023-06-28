@@ -33,8 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui.html",
             "/webjars/**",
             /* swagger v3 */
-//            "/v3/api-docs/**",
-//            "/swagger-ui/**"
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
     };
 
     private static final String[] PRIVATE_URLS = {

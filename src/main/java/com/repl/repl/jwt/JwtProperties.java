@@ -15,4 +15,7 @@ public class JwtProperties {
     private final String secretKey;
     private final String tokenPrefix;
 
+    public String getSecretKey() {
+        return secretKey;
+    }
 }

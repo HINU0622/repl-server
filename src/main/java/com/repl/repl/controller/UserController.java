@@ -41,6 +41,8 @@ public class UserController {
 
         Cookie[] cookies = request.getCookies();
 
+//        logger.info("Cookies : {}", cookies[0]);
+
         SignInResponse cookieRes = userService.signIn(cookies);
 
         if(cookieRes != null) {
