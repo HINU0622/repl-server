@@ -16,8 +16,6 @@ public interface UserService {
 
     SignInResponse signIn(Cookie[] cookies);
 
-    User findById(String user_id);
-
     Cookie makeCookie(String user_id, String password) throws NoSuchAlgorithmException;
 
     boolean isValidCookie(Cookie cookie);
