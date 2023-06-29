@@ -51,17 +51,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(String user_id) {
-
-        Optional<UserEntity> found = userRepository.findById(user_id);
-
-        if(found.isEmpty()) throw new RuntimeException("유저를 찾을 수 없음.");
-
-        return found.get().toDTO();
-
-    }
-
-    @Override
     public SignInResponse signIn(User user) {
 
         UserEntity userEntity = user.toEntity();
