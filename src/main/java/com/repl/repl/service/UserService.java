@@ -5,6 +5,7 @@ import com.repl.repl.dto.response.SignInResponse;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 
 @Service
@@ -19,5 +20,7 @@ public interface UserService {
     Cookie makeCookie(String user_id, String password) throws NoSuchAlgorithmException;
 
     boolean isValidCookie(Cookie cookie);
+
+    String resolveToken(HttpServletRequest request);
 
 }

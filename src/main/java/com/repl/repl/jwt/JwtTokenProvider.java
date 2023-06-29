@@ -83,8 +83,8 @@ public class JwtTokenProvider {
             throw new RuntimeException("잘못된 토큰입니다.");
         }
     }
-    public String getUserEmailFromToken(String token) {
-        return (String) getClaims(token).get("email");
+    public String getUserIdFromToken(String token) {
+        return (String) getClaims(token).get("id");
     }
 
 }
