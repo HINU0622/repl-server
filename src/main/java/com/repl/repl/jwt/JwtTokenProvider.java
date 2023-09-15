@@ -1,90 +1,73 @@
 package com.repl.repl.jwt;
 
-import com.repl.repl.dto.AuthUser;
-import com.repl.repl.entity.UserEntity;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
+import java.util.Base64;
 import java.util.Date;
 
-@RequiredArgsConstructor
-@Component
+@Component(value = "jwtTokenProvider")
 public class JwtTokenProvider {
+    private String secretKey = "dnrhddltks0803_eornalfowoeks_thdtkdgns";
 
-    private final JwtProperties jwtProperties;
+    private final long ACCESS_TOKEN_LIFESPAN = 30L * 60L * 1000L;
 
-    private final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
+    private final long REFRESH_TOKEN_LIFESPAN = 30L * 24L * 60L * 60L * 1000L;
 
-    public String makeJwtToken(UserEntity user) {
-        Date now = new Date();
+    @PostConstruct
+    protected void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+    public String generateToken(String user_id, SimpleGrantedAuthority role, long expireMilliSeconds) {
 
         return Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuer(jwtProperties.getIssuer())
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis()))
-                .claim("id", user.getId())
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+                .setSubject(user_id)
+                .claim("auth", role.getAuthority())
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setExpiration(new Date(System.currentTimeMillis() + expireMilliSeconds))
                 .compact();
     }
 
-    public AuthUser getUserDtoOf(String authorizationHeader) {
-        validationAuthorizationHeader(authorizationHeader);
-
-        String token = extractToken(authorizationHeader);
-        Claims claims = parsingToken(token);
-
-        return new AuthUser(claims);
-    }
-
-    private Claims parsingToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtProperties.getSecretKey())
+    public String getUsername(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
+
+        return claims.getSubject();
     }
 
-    private void validationAuthorizationHeader(String header) {
-        if (header == null || !header.startsWith(jwtProperties.getTokenPrefix())) {
-            throw new IllegalArgumentException("Invalid token!");
-        }
-    }
-
-    private String extractToken(String authorizationHeader) {
-        return authorizationHeader.substring(jwtProperties.getTokenPrefix().length());
-    }
-
-    private Claims getClaims(String token) {
-        try{
-            return Jwts.parser()
-                    .setSigningKey(jwtProperties.getSecretKey())
-                    .parseClaimsJws(token)
-                    .getBody();
-            // 토큰 유효성 확인
-        } catch (SecurityException e) {
-            log.info("Invalid JWT signature.");
-            throw new RuntimeException("토큰의 서명이 잘못되었습니다.");
-        } catch (MalformedJwtException e) {
-            log.info("Invalid JWT token.");
-            throw new RuntimeException("유효하지 않은 구성의 토큰입니다.");
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token.");
-            throw new RuntimeException("만료된 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token.");
-            throw new RuntimeException("지원되지 않는 형식이거나 구성의 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            log.info("JWT token compact of handler are invalid.");
-            throw new RuntimeException("잘못된 토큰입니다.");
         }
-    }
-    public String getUserIdFromToken(String token) {
-        return (String) getClaims(token).get("id");
+        return false;
     }
 
+    public void addTokenCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie(JwtAuthFilter.COOKIE_NAME, token);
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
+
+        response.addCookie(cookie);
+    }
+
+    public void clearTokenCooke(HttpServletResponse response) {
+        Cookie cookie = new Cookie(JwtAuthFilter.COOKIE_NAME, "");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+    }
 }

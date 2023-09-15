@@ -2,10 +2,10 @@ package com.repl.repl.service;
 
 import com.repl.repl.dto.User;
 import com.repl.repl.dto.response.SignInResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 
 @Service
@@ -22,5 +22,7 @@ public interface UserService {
     boolean isValidCookie(Cookie cookie);
 
     String resolveToken(HttpServletRequest request);
+
+    User getUserById(String id);
 
 }

@@ -7,35 +7,32 @@ import com.repl.repl.entity.UserEntity;
 import com.repl.repl.jwt.JwtTokenProvider;
 import com.repl.repl.repository.UserRepository;
 import com.repl.repl.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service(value = "userService")
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public User create(User user) {
 
-        logger.info("Service : {}", user);
+        log.info("Service : {}", user);
 
         UserEntity userEntity = user.toEntity();
         try {
@@ -61,7 +58,10 @@ public class UserServiceImpl implements UserService {
         if(found.isEmpty()) throw new RuntimeException("유저를 찾을 수 없음.");
         if(!found.get().equals(userEntity)) throw new RuntimeException("아이디 혹은 비밀번호 불일치.");
 
-        String token = jwtTokenProvider.makeJwtToken(found.get());
+        String token = jwtTokenProvider.generateToken(
+                found.get().getId(),
+                new SimpleGrantedAuthority("USER"),
+                30L * 60L * 1000);
 
         return new SignInResponse(token);
 
@@ -78,7 +78,10 @@ public class UserServiceImpl implements UserService {
         for(Cookie c : cookies) {
             if(isValidCookie(c)) {
                 UserEntity entity = new UserEntity(c.getName(), c.getValue());
-                String token = jwtTokenProvider.makeJwtToken(entity);
+                String token = jwtTokenProvider.generateToken(
+                        entity.getId(),
+                        new SimpleGrantedAuthority("USER"),
+                        30L * 60L * 1000);
 
                 return new SignInResponse(token);
             }
@@ -100,14 +103,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isValidCookie(Cookie cookie) {
 
-        logger.info("Name  : {}", cookie.getName());
-        logger.info("Value : {}", cookie.getValue());
+        log.info("Name  : {}", cookie.getName());
+        log.info("Value : {}", cookie.getValue());
 
         Optional<UserEntity> userEntity = userRepository.findById(cookie.getName());
         if(userEntity.isEmpty()) return false;
 
         boolean is = userEntity.get().getPassword().equals(cookie.getValue());
-        logger.info("isValid : {}", is);
+        log.info("isValid : {}", is);
 
         return is;
     }
@@ -118,5 +121,16 @@ public class UserServiceImpl implements UserService {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    @Override
+    public User getUserById(String id) {
+        Optional<UserEntity> found = userRepository.findById(id);
+
+        if(found.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "유저를 찾을 수 없습니다.");
+        }
+
+        return found.get().toDTO();
     }
 }

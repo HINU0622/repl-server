@@ -1,11 +1,11 @@
 package com.repl.repl.entity;
 
 import com.repl.repl.dto.Servey;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
