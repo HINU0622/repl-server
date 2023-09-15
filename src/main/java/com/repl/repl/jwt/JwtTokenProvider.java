@@ -33,7 +33,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getUsername(String token) {
+    public String getUserId(String token) {
         Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(secretKey)
