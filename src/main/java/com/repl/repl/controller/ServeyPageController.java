@@ -20,7 +20,7 @@ public class ServeyPageController {
                              @PathVariable String uuid,
                              Model model) {
         model.addAttribute("author", serveyPageService.loadServeyPage(user_id, uuid));
-        return "servey";
+        return "/servey";
     }
 
 }

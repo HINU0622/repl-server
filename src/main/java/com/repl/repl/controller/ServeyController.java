@@ -2,6 +2,7 @@ package com.repl.repl.controller;
 
 import com.repl.repl.dto.AuthUser;
 import com.repl.repl.dto.Servey;
+import com.repl.repl.jwt.ReplUserDetails;
 import com.repl.repl.service.ServeyService;
 import com.repl.repl.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class ServeyController {
                                                Authentication authentication) {
         log.info("authentication {}", authentication);
 
-        String user_id = "asdf";
+        String user_id = ((ReplUserDetails)authentication.getPrincipal()).getUser().getId();
         servey.setUser_id(user_id);
 
         Servey saved = serveyService.createServey(servey);
