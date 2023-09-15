@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
                 UserEntity entity = new UserEntity(c.getName(), c.getValue());
                 String token = jwtTokenProvider.generateToken(
                         entity.getId(),
-                        new SimpleGrantedAuthority("USER"),
+                        new SimpleGrantedAuthority("ROLE_USER"),
                         30L * 60L * 1000);
 
                 return new SignInResponse(token);

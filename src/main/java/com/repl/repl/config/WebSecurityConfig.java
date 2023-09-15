@@ -59,12 +59,13 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.httpBasic(HttpBasicConfigurer::disable)
+        http
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(PUBLIC_URLS).permitAll()
-                        .requestMatchers(PRIVATE_URLS).authenticated());
+//                        .requestMatchers(PUBLIC_URLS).permitAll()
+//                        .requestMatchers(PRIVATE_URLS).hasRole("USER")
+                        .anyRequest().permitAll());
 
         return http.build();
     }

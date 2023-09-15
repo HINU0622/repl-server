@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,11 @@ public class ServeyController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<Servey> createServey(HttpServletRequest request,
-                                               @RequestBody Servey servey,
+    public ResponseEntity<Servey> createServey(@RequestBody Servey servey,
                                                Authentication authentication) {
-        log.info("authentication {}", ((AuthUser) authentication.getPrincipal()).getId());
+        log.info("authentication {}", authentication);
 
-        String user_id = ((AuthUser) authentication.getPrincipal()).getId();
+        String user_id = "asdf";
         servey.setUser_id(user_id);
 
         Servey saved = serveyService.createServey(servey);
