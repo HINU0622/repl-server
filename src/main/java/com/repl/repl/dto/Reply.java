@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +16,9 @@ public class Reply {
 
     private String survey_id;
 
-    private String
+    private String ip;
+
+    private LocalDateTime reply_date;
 
 
 }
