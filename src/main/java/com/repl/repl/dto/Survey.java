@@ -1,6 +1,6 @@
 package com.repl.repl.dto;
 
-import com.repl.repl.entity.ServeyEntity;
+import com.repl.repl.entity.SurveyEntity;
 import lombok.*;
 
 @Getter
@@ -9,17 +9,17 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Servey {
+public class Survey {
 
-    private String servey_id;
+    private String Survey_id;
 
     private String user_id;
 
     private String content;
 
-    public ServeyEntity toEntity() {
-        return ServeyEntity.builder()
-                .servey_id(servey_id)
+    public SurveyEntity toEntity() {
+        return SurveyEntity.builder()
+                .Survey_id(Survey_id)
                 .user_id(user_id)
                 .content(content)
                 .build();

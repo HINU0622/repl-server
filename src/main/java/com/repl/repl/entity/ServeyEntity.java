@@ -1,6 +1,6 @@
 package com.repl.repl.entity;
 
-import com.repl.repl.dto.Servey;
+import com.repl.repl.dto.Survey;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -9,25 +9,25 @@ import lombok.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "servey")
+@Table(name = "Survey")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ServeyEntity {
+public class SurveyEntity {
 
     @Id
-    private String servey_id;
+    private String Survey_id;
 
     private String user_id;
 
     private String content;
 
-    public Servey toDTO() {
-        return Servey.builder()
-                .servey_id(servey_id)
+    public Survey toDTO() {
+        return Survey.builder()
+                .Survey_id(Survey_id)
                 .user_id(user_id)
                 .content(content)
                 .build();
@@ -36,8 +36,8 @@ public class ServeyEntity {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        ServeyEntity that = (ServeyEntity) o;
-        return Objects.equals(servey_id, that.servey_id) && Objects.equals(user_id, that.user_id);
+        SurveyEntity that = (SurveyEntity) o;
+        return Objects.equals(Survey_id, that.Survey_id) && Objects.equals(user_id, that.user_id);
     }
 
 }
