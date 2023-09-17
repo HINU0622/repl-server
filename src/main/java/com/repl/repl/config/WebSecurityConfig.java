@@ -27,7 +27,7 @@ public class WebSecurityConfig {
     private static final String[] PUBLIC_URLS = {
             "/api/v1/user/sign-up",
             "/api/v1/user/sign-in",
-            "/servey/**",
+            "/survey/**",
             "/favicon.ico",
             /* swagger */
             "/v2/api-docs",
@@ -44,7 +44,7 @@ public class WebSecurityConfig {
     };
 
     private static final String[] PRIVATE_URLS = {
-            "/api/v1/servey/**"
+            "/api/v1/survey/**"
     };
 
     @Bean
